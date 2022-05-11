@@ -1,6 +1,7 @@
 package com.feng.insurance.model
 
 import android.graphics.Bitmap
+import android.media.Image
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
@@ -26,11 +27,21 @@ class LoginViewModel : ViewModel() {
 //    val progressBar = mutableStateOf(value = false)
 
     private val _insuranceList = mutableStateListOf<Insurance>()
+    private val _imageList = mutableStateListOf<Image>()
     private val _eventList = mutableStateListOf<Event>()
     val insuranceList: List<Insurance>
         get() = _insuranceList
     val eventList: List<Event>
         get() = _eventList
+
+
+    fun getImage(){
+        val id = event.value?.id
+        if (id === null) {
+            throw java.lang.Exception("Idk")
+        }
+
+    }
 
     fun getInsuranceList() {
         val id = user.value?.id
@@ -43,6 +54,7 @@ class LoginViewModel : ViewModel() {
             val apiService = APIService.getInstance()
             try {
                 Log.d("Logging", "Trying to get insurances")
+//                val response = apiService.getInsurancesList(id)
                 val response = apiService.getInsurancesList(id)
                 if (response.isSuccessful) {
                     Log.d("Logging", "Got insurances ${response.body()}")
@@ -107,9 +119,12 @@ class LoginViewModel : ViewModel() {
     }
 
     private val _user = mutableStateOf<User?>(null)
+    private val _event = mutableStateOf<Event?>(null)
 
     val user: MutableState<User?>
         get() = _user
+    val event: MutableState<Event?>
+    get() = _event
 
     fun logout() {
         _user.value = null

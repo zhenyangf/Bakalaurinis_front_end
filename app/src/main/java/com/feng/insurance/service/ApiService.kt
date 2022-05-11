@@ -1,6 +1,8 @@
 package com.feng.insurance.service
 
 import android.graphics.Bitmap
+import android.media.Image
+import android.provider.MediaStore
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -58,9 +60,10 @@ data class Event (
     var payoutRange: String,
     var title: String,
     var status: EventStatus,
-//    var file: MultipartBody,
     var damageType: List<DamageType>,
 )
+
+
 
 data class CreateEventDto (
     var description: String,
@@ -105,6 +108,7 @@ interface APIService {
 
     @POST("/api/user/insurance/add")
     suspend fun createNewInsurance(@Body insuranceDto: InsuranceDto) : Response<Insurance>
+
 
     @JvmSuppressWildcards
     @Multipart

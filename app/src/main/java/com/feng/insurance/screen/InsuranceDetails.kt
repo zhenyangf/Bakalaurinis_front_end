@@ -5,6 +5,7 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.graphics.ImageFormat.JPEG
 import android.net.Uri
@@ -17,17 +18,16 @@ import android.util.Log
 import android.view.Gravity.apply
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -126,28 +126,36 @@ fun InsuranceDetails(navController: NavHostController, viewModel: LoginViewModel
 
 }
 
+
+
 @Composable
 fun EventListItem(event: Event) {
-    Column {
+    Column(modifier = Modifier.border(0.8.dp, Color.Gray).fillMaxWidth().padding(24.dp)) {
+
         Text(text = event.title)
         Text(text = event.description)
         Text(text = event.payoutRange)
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(24.dp)) {
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.padding(24.dp)
+        ) {
             event.damageType?.forEach {
                 Chip(it.toString())
             }
         }
-//        Paveiksleliai
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            listOf(1, 2, 3).forEach {
-                Box(modifier = Modifier
-                    .size(100.dp)
-                    .background(Color.Gray))
-            }
-        }
+
+
     }
 }
 
+
+
+
+
+fun byteArrayToBitmap(data: ByteArray) : Bitmap{
+    return BitmapFactory.decodeByteArray(data,0,data.size)
+}
 private data class Estimate(
     var min: Int,
     var max: Int,
@@ -194,15 +202,7 @@ fun ClosedRange<Char>.randomString(length: Int) =
 fun CreateEventDialog(viewModel: LoginViewModel, sheetState: ModalBottomSheetState, insuranceID: Int?) {
     val coroutineScope = rememberCoroutineScope()
     var imageUri by remember { mutableStateOf<Uri?>(null) }
-    var imageUri2 = remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
-    var byteArray = remember { ByteArray(0) }
-    var filename =remember{ String()}
-    val bitmap2 = remember { mutableStateOf<Bitmap?>(null) }
-    val result = remember {
-        mutableStateOf<Bitmap?>(null)
-    }
-//    val file = File.createTempFile("","")
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             imageUri = uri
         }
@@ -381,6 +381,9 @@ fun CreateEventDialog(viewModel: LoginViewModel, sheetState: ModalBottomSheetSta
             )
         }
 
+
+
+
         Spacer(modifier = Modifier.height(12.dp))
         Button(onClick = { launcher.launch("image/*") }) {
             Text(text = "Pick Image")
@@ -397,16 +400,9 @@ fun CreateEventDialog(viewModel: LoginViewModel, sheetState: ModalBottomSheetSta
             value = description.value,
             onValueChange = { description.value = it }
         )
-//        ActivityResultContracts.TakePicture(bitmap)
 
-        DamageItem(
-            label = "fire",
-            enabled = fireDamageEnabled.value,
-            onEnabledChange = { fireDamageEnabled.value = it },
-            valueLabel = "square feet",
-            value = fireDamageSize.value,
-            onValueChange = { fireDamageSize.value = it }
-        )
+
+
         DamageItem(
             label="small hole ceiling",
             enabled = smalleholeceilingEnabled.value,

@@ -64,7 +64,7 @@ fun LoginPage(navController: NavHostController, viewModel: LoginViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { navController.navigate(Routes.SignUp.route) },
             ) {
-                Text(text = "SignUp")
+                Text(text = "Sign Up")
             }
         }
     }

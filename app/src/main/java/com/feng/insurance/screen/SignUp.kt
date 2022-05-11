@@ -90,7 +90,7 @@ fun SignUp(navController: NavHostController, viewModel: LoginViewModel) {
                         )
                     )},
             ) {
-                Text(text = "SignUp")
+                Text(text = "Sign Up")
             }
 
             TextButton(

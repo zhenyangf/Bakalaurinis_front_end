@@ -1,6 +1,8 @@
 package com.feng.insurance.screen
 
 import android.util.Log
+import androidx.compose.foundation.Indication
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -10,6 +12,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -63,7 +67,10 @@ fun InsuranceListItem(insurance: Insurance, onClick: () -> Unit) {
     val interactionSource = remember { MutableInteractionSource() }
 
     ListItem(
-        modifier =  Modifier.clickable(onClick = onClick, interactionSource = interactionSource, indication = rememberRipple(true)),
+        modifier =  Modifier.clickable(onClick = onClick, interactionSource = interactionSource, indication = rememberRipple(true)).drawBehind {
+            val strokeWidth = density
+            val y = size.height -strokeWidth/2
+        drawLine(Color.Gray, Offset(0f,y),Offset(size.width,y),strokeWidth)}.padding(24.dp),
         overlineText = {
             Text(text = insurance.status.toString(), fontSize = 10.sp)
         },
@@ -78,6 +85,8 @@ fun InsuranceListItem(insurance: Insurance, onClick: () -> Unit) {
         }
     )
 }
+
+
 
 @Composable
 fun CreateInsuranceDialog(viewModel: LoginViewModel, isOpen: MutableState<Boolean>) {
